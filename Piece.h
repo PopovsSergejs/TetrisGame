@@ -1,0 +1,1 @@
+extern const int Piece[7][4][5][5];
