@@ -13,6 +13,10 @@ class Block {
         void rotateLeft();
         void rotateRight();
         bool CheckBottom();
+        bool CheckLeft();
+        bool CheckRight();
+        void moveLeft();
+        void moveRight();
 };
     
 #endif
