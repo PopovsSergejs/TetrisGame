@@ -4,23 +4,26 @@
 #include "Block.h"
 #include "Field.h"
 #include "Arial24x23.h"
+#include "Arial12x12.h"
+#include <ctime>
 
-#define PIN_XP          p20
-#define PIN_XM          p19
-#define PIN_YP          p18
-#define PIN_YM          p17
-#define PIN_MOSI        p11
-#define PIN_MISO        p12
-#define PIN_SCLK        p13
-#define PIN_CS_TFT      p14
-#define PIN_DC_TFT      p21
-#define PIN_BL_TFT      p15
-#define PIN_CS_SD       p4
-#define PURPLE          0x780F
-#define DARKGREY        0x7BEF
-#define BLOCK_SIZE      20
-#define MAXX            10
-#define MAXY            12
+#define PIN_XP              p20
+#define PIN_XM              p19
+#define PIN_YP              p18
+#define PIN_YM              p17
+#define PIN_MOSI            p11
+#define PIN_MISO            p12
+#define PIN_SCLK            p13
+#define PIN_CS_TFT          p14
+#define PIN_DC_TFT          p21
+#define PIN_BL_TFT          p15
+#define PIN_CS_SD           p4
+#define PURPLE              0x780F
+#define DARKGREY            0x7BEF
+#define BLOCK_SIZE          20
+#define SMALL_BLOCK_SIZE    8
+#define MAXX                10
+#define MAXY                12
 
 SeeedStudioTFTv2 TFT(PIN_XP, PIN_XM, PIN_YP, PIN_YM, PIN_MOSI, PIN_MISO, PIN_SCLK, PIN_CS_TFT, PIN_DC_TFT, PIN_BL_TFT);
 
@@ -136,40 +139,35 @@ void TFTInit()
 int getGesture()
 {
     point p;
-    int flag ,x ,y ,xx ,yy ,i;
-    flag = x = xx = y = yy = i = 0;
+    clock_t start_s = clock();
+    int flag ,x ,y ;
+    flag = x = y = 0;
     while( !flag ) {
         p.x=0;
         p.y=0;
-        if (TFT.getTouch(p)==TFT.YES) {
+        if ( ( TFT.getTouch(p)==TFT.YES ) || ( TFT.getTouch(p)==TFT.MAYBE ) ) {
             TFT.getTouch(p);            // read analog pos.
             TFT.getPixel(p);            // convert to pixel pos
             flag = 1;
             x = p.x;
             y = p.y;
-        }
+        } else if ( start_s > 10 )
+            return 13;
     }
-    while( ( TFT.getTouch(p)==TFT.YES ) || ( TFT.getTouch(p)==TFT.MAYBE ) ) {
-        i++;
-        TFT.getTouch(p);            // read analog pos.
-        TFT.getPixel(p);            // convert to pixel pos
-        xx = p.x;
-        yy = p.y;
-    }
-    if ( ( abs(xx - x) < 10 ) && ( abs(yy - y) < 10  ) && ( x < 25 ) ) {
+    if ( ( x < 25 ) ) {
         return 0 ;
     }
-    if ( i > 30 )  {
-        if ( ( ( yy - y ) > 0 ) && (abs(yy - y) > ( 5 * abs(xx-x) ) ) ) //To the RIGHT
+    if ( x > 35 )  {
+        if (( y > 170 ) && ( x < 190 ) && ( x > 70 ))//To the RIGHT
             return 1 ;
-        if ( ( ( y - yy ) > 0 ) && (abs(y - yy) > ( 5 * abs(xx-x) ) ) ) //To the LEFT
+        if (( y < 60 ) && ( x < 190 ) && ( x > 70 )) //To the LEFT
             return 2 ;
-        if ( ( ( xx - x ) > 0 ) && (abs(xx - x) > ( 5 * abs(yy-y) ) ) ) //To the TOP
+        if ( x > 190 ) //To the TOP
             return 3 ;
-        if ( ( ( x - xx ) > 0 ) && (abs(x - xx) > ( 5 * abs(yy-y) ) ) ) //To the BOTTOM
+        if ( x < 80 ) //To the BOTTOM
             return 4 ;
     }
-    return 13;
+    return 13;         //13 = IGNORE
 }
 
 bool TouchStatus()
@@ -184,7 +182,7 @@ Block doGest(Block NewBlock)
 {
     int gest = getGesture();
     if ( gest != 13 ) {
-        clrBlock(NewBlock);
+        //clrBlock(NewBlock);
         switch ( gest ) {
             case 0: {
                 while ( !NewBlock.CheckBottom() ) {
@@ -220,4 +218,36 @@ void gameOver(int score)
     TFT.cls();
     TFT.locate(40,160);
     TFT.printf("Score : %i", score);
+}
+
+void drawScore(int score)
+{
+    TFT.set_font((unsigned char*) Arial12x12);
+    TFT.locate(0,300);
+    TFT.printf("Score : %i", score);
+    TFT.set_font((unsigned char*) Arial24x23);
+    
+}
+
+void drawNextBlock(Block NewBlock)
+{
+    int ix , iy , x , y;
+    x = 0;
+    y = 0;
+    for ( ix = x - 1 ; ix < x + 3 ; ix++ ) {
+        for ( iy = y - 2 ; iy < y + 2 ; iy++ )
+            if ( Piece[NewBlock.nextForm][NewBlock.angle][ix - x + 2][iy - y + 2] != 0 ) {
+                TFT.fillrect(SMALL_BLOCK_SIZE * ( ix + 1 ) + 200, SMALL_BLOCK_SIZE * iy + 280,
+                             SMALL_BLOCK_SIZE * ( ix + 2 ) + 200, SMALL_BLOCK_SIZE * ( iy + 1 ) + 280,
+                             Piece[NewBlock.nextForm][NewBlock.angle][ix - x + 2][iy - y + 2]);
+                TFT.rect(SMALL_BLOCK_SIZE * ( ix + 1 ) + 200, SMALL_BLOCK_SIZE * iy + 280,
+                         SMALL_BLOCK_SIZE * ( ix + 2 ) + 200, SMALL_BLOCK_SIZE * ( iy + 1 ) + 280,
+                         0xFFFF );
+            }
+    }
+}
+
+void clrNextBlock(Block NewBlock)
+{
+    TFT.fillrect( 180 , 263 , 240, 320 , 0 );
 }

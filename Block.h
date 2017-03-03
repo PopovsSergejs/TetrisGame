@@ -6,6 +6,7 @@ class Block {
         Block();
         ~Block();
         int form;
+        int nextForm;
         int angle;
         int x;
         int y;
@@ -15,6 +16,8 @@ class Block {
         bool CheckBottom();
         bool CheckLeft();
         bool CheckRight();
+        bool CheckRotateLeft(); 
+        bool CheckRotateRight();
         void moveLeft();
         void moveRight();
 };

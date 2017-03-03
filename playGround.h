@@ -14,3 +14,6 @@ int getGesture();
 bool TouchStatus();
 Block doGest(Block NewBlock);
 void gameOver(int score);
+void drawScore(int score);
+void drawNextBlock(Block NewBlock);
+void clrNextBlock(Block NewBlock);

@@ -17,6 +17,8 @@ int main()
         Block NewBlock;
         flag = false;
         drawMap();
+        drawScore(score);
+        drawNextBlock(NewBlock);
         while( !flag ) {
             drawMap();
             drawBlock(NewBlock);
@@ -39,6 +41,7 @@ int main()
             }
         }
         score += checkLine();
+        clrNextBlock(NewBlock);
         if ( checkGameOver() )
             break;
     }
