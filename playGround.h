@@ -9,7 +9,6 @@ void TFTInit();
 void drawBlock(Block NewBlock);
 void drawFrame();
 void clrBlock(Block NewBlock);
-void saveToField(Block NewBlock);
 int getGesture();
 bool TouchStatus();
 Block doGest(Block NewBlock);

@@ -31,7 +31,7 @@ void Block::rotateLeft()
 
 void Block::rotateRight()
 {
-    if ( !CheckRotateLeft() )   {
+    if ( !CheckRotateRight() )   {
         if ( angle == 3 )
             angle = 0;
         else
@@ -60,7 +60,7 @@ bool Block::CheckBottom()
                     && (Field[y + yy - 1][x + xx - 2] != 0) &&
                     ( y + yy - 1 > 0 ) )
                 return 1;
-            if ( (Piece[form][angle][xx][yy] != 0) && ( yy + y == 13 ) )
+            if ( (Piece[form][angle][xx][yy] != 0) && ( yy + y == MAXY + 1 ) )
                 return 1;
         }
     }
@@ -92,7 +92,7 @@ bool Block::CheckRight()
                     && (Field[y + yy - 2][x + xx - 1] != 0) &&
                     ( y + yy - 3 > 0 ) )
                 return 1;
-            if ( (Piece[form][angle][xx][yy] != 0) && ( xx + x == 11 )  )
+            if ( (Piece[form][angle][xx][yy] != 0) && ( xx + x == MAXX + 1 )  )
                 return 1;
         }
     }
@@ -108,7 +108,7 @@ bool Block::CheckRotateLeft()
                     && (Field[y + yy - 1][x + xx - 2] != 0) &&
                     ( y + yy - 3 > 0 ) )
                 return 1;
-            if ( (Piece[form][( abs(angle + 1) ) % 4][xx][yy] != 0) && (( xx + x == 1 ) || ( xx + x == 11 ))  )
+            if ( (Piece[form][( abs(angle + 1) ) % 4][xx][yy] != 0) && (( xx + x == 1 ) || ( xx + x == MAXX + 1 ))  )
                 return 1;
             }
     }
@@ -124,7 +124,7 @@ bool Block::CheckRotateRight()
                     && (Field[y + yy - 1][x + xx - 2] != 0) &&
                     ( y + yy - 3 > 0 ) )
                 return 1;
-            if ( (Piece[form][( abs(angle + 1) ) % 4][xx][yy] != 0) && (( xx + x == 1 ) || ( xx + x == 12 ))  )
+            if ( (Piece[form][( abs(angle + 1) ) % 4][xx][yy] != 0) && (( xx + x == 1 ) || ( xx + x == MAXX + 2 ))  )
                 return 1;
         }
     }

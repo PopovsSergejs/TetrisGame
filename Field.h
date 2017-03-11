@@ -1,6 +1,6 @@
-#define MAXX            10
-#define MAXY            12
+#include "Block.h"
 
 extern int Field[MAXY][MAXX];
 int checkLine();
 bool checkGameOver();
+void saveToField(Block NewBlock);

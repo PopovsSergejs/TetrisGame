@@ -5,6 +5,7 @@
 #include "Field.h"
 #include "Arial24x23.h"
 #include "Arial12x12.h"
+#include "Define.h"
 #include <ctime>
 
 #define PIN_XP              p20
@@ -18,12 +19,7 @@
 #define PIN_DC_TFT          p21
 #define PIN_BL_TFT          p15
 #define PIN_CS_SD           p4
-#define PURPLE              0x780F
-#define DARKGREY            0x7BEF
-#define BLOCK_SIZE          20
 #define SMALL_BLOCK_SIZE    8
-#define MAXX                10
-#define MAXY                12
 
 SeeedStudioTFTv2 TFT(PIN_XP, PIN_XM, PIN_YP, PIN_YM, PIN_MOSI, PIN_MISO, PIN_SCLK, PIN_CS_TFT, PIN_DC_TFT, PIN_BL_TFT);
 
@@ -101,28 +97,16 @@ void clrBlock(Block NewBlock)
 void drawFrame()
 {
     int x, y;
-    for ( y = 0 ; y < 260 ; y += 20 ) {
-        TFT.fillrect(0, y, 20, y + 20, PURPLE );
-        TFT.rect(0, y, 20, y + 20, DARKGREY );
-        TFT.fillrect(220, y, 240, y + 20, PURPLE );
-        TFT.rect(220, y, 240, y + 20, DARKGREY );
+    for ( y = 0 ; y < (MAXY + 1) * BLOCK_SIZE ; y += BLOCK_SIZE ) {
+        TFT.fillrect(0, y, BLOCK_SIZE, y + BLOCK_SIZE, PURPLE );
+        TFT.rect(0, y, BLOCK_SIZE, y + BLOCK_SIZE, DARKGREY );
+        TFT.fillrect((MAXX + 1) * BLOCK_SIZE, y, (MAXX + 2) * BLOCK_SIZE, y + BLOCK_SIZE, PURPLE );
+        TFT.rect((MAXX + 1) * BLOCK_SIZE, y, (MAXX + 2) * BLOCK_SIZE, y + BLOCK_SIZE, DARKGREY );
     }
-    for ( x = 0 ; x < 240 ; x += 20 ) {
-        TFT.fillrect(x, 240, x + 20, 260, PURPLE );
-        TFT.rect(x, 240, x + 20, 260, DARKGREY );
+    for ( x = 0 ; x < (MAXX + 2) * BLOCK_SIZE ; x += BLOCK_SIZE ) {
+        TFT.fillrect(x, MAXY * BLOCK_SIZE, x + BLOCK_SIZE, (MAXY + 1) * BLOCK_SIZE , PURPLE );
+        TFT.rect(x, MAXY * BLOCK_SIZE, x + BLOCK_SIZE, (MAXY + 1) * BLOCK_SIZE, DARKGREY );
 
-    }
-}
-
-void saveToField(Block NewBlock)
-{
-    int xx , yy;
-    for ( xx = 0 ; xx < 5 ; xx++ ) {
-        for (yy = 0 ; yy < 5 ; yy++ )  {
-            if ( Piece[NewBlock.form][NewBlock.angle][xx][yy] != 0 )
-                Field[NewBlock.y + yy - 2][NewBlock.x + xx - 2] =
-                    Piece[NewBlock.form][NewBlock.angle][xx][yy];
-        }
     }
 }
 
@@ -234,7 +218,7 @@ void drawNextBlock(Block NewBlock)
     int ix , iy , x , y;
     x = 0;
     y = 0;
-    for ( ix = x - 1 ; ix < x + 3 ; ix++ ) {
+    for ( ix = x - 2 ; ix < x + 2 ; ix++ ) {
         for ( iy = y - 2 ; iy < y + 2 ; iy++ )
             if ( Piece[NewBlock.nextForm][NewBlock.angle][ix - x + 2][iy - y + 2] != 0 ) {
                 TFT.fillrect(SMALL_BLOCK_SIZE * ( ix + 1 ) + 200, SMALL_BLOCK_SIZE * iy + 280,
