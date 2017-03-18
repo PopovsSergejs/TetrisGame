@@ -1,4 +1,5 @@
 #include "Block.h"
+#include "Define.h"
 
 extern int Field[MAXY][MAXX];
 int checkLine();

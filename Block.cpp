@@ -3,11 +3,17 @@
 #include "playGround.h"
 #include "Piece.h"
 #include "Field.h"
+#include "Define.h"
+#include <ctime>
+
+//  Constructor of the object. Gives the random form and
+//  defines the position on the field
 
 Block::Block()
-{   
+{
+    srand (clock());
     if (nextForm > 6)
-       nextForm = rand() % 7;
+        nextForm = (rand() + 1) % 7;
     form = nextForm;
     nextForm = rand() % 7;
     angle = rand() % 4;
@@ -15,9 +21,14 @@ Block::Block()
     y = -1;
 }
 
+//  Destructor of an object
+
 Block::~Block()
 {
 }
+
+//  Check possibility of rotating of a block and
+//  rotate it if it is possible
 
 void Block::rotateLeft()
 {
@@ -39,6 +50,9 @@ void Block::rotateRight()
     }
 }
 
+//  Check possibility of moving the block and
+//  moves it if it is possible
+
 void Block::moveLeft()
 {
     if ( !CheckLeft() )
@@ -50,6 +64,11 @@ void Block::moveRight()
     if ( !CheckRight() )
         x++;
 }
+
+//  Check possibility to move block one level below. Checks both, frame and
+//  blocks on the field ( separately ).
+//  Returns 1 if it is not possible and
+//          0 if it is possible.
 
 bool Block::CheckBottom()
 {
@@ -67,6 +86,11 @@ bool Block::CheckBottom()
     return 0;
 }
 
+//  Check possibility to move block to the left. Checks both, frame and
+//  blocks on the field ( separately ).
+//  Returns 1 if it is not possible and
+//          0 if it is possible.
+
 bool Block::CheckLeft()
 {
     int xx, yy;
@@ -82,6 +106,11 @@ bool Block::CheckLeft()
     }
     return 0;
 }
+
+//  Check possibility to move block to the right. Checks both, frame and
+//  blocks on the field ( separately ).
+//  Returns 1 if it is not possible and
+//          0 if it is possible.
 
 bool Block::CheckRight()
 {
@@ -99,6 +128,11 @@ bool Block::CheckRight()
     return 0;
 }
 
+//  Check possibility of rotation counter clockwise Checks both, frame and
+//  blocks on the field ( separately ).
+//  Returns 1 if it is not possible and
+//          0 if it is possible.
+
 bool Block::CheckRotateLeft()
 {
     int xx, yy;
@@ -110,10 +144,15 @@ bool Block::CheckRotateLeft()
                 return 1;
             if ( (Piece[form][( abs(angle + 1) ) % 4][xx][yy] != 0) && (( xx + x == 1 ) || ( xx + x == MAXX + 1 ))  )
                 return 1;
-            }
+        }
     }
     return 0;
 }
+
+//  Check possibility of rotation clockwise Checks both, frame and
+//  blocks on the field ( separately ).
+//  Returns 1 if it is not possible and
+//          0 if it is possible.
 
 bool Block::CheckRotateRight()
 {

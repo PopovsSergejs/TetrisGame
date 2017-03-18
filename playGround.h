@@ -1,10 +1,10 @@
 #include "mbed.h"
 #include "SeeedStudioTFTv2.h"
 #include "Block.h"
+#include "Define.h"
 
 void drawMap();
 void drawMapV2();
-void setColor( int y, int x, int color );
 void TFTInit();
 void drawBlock(Block NewBlock);
 void drawFrame();

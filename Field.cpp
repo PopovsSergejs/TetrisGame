@@ -1,14 +1,17 @@
 #include "Field.h"
 #include "playGround.h"
 #include "Piece.h"
+#include "Define.h"
 
-#define BLACK           0
-#define MAXX            10
-#define MAXY            12
-
+//  Declearing and defining of the playground/field
 extern int Field[MAXY][MAXX] = {0};
 
-int checkLine()    {
+//  Checking field for filled lines. If it is field
+//  it removes it with lines uppon it
+//  Returns Score equal to amount of removed lines, multipiled with 100
+
+int checkLine()
+{
     int x, y, score = 0;
     bool status;
     for ( y = 0 ; y < MAXY ; y++ ) {
@@ -24,7 +27,7 @@ int checkLine()    {
                 for (xx = 0 ; xx < MAXX ; xx++ )  {
                     Field[yy][xx] = Field[yy-1][xx];
                 }
-                
+
             }
         }
     }
@@ -33,14 +36,20 @@ int checkLine()    {
     return score;
 }
 
+//  Checks blocks on MAXX (top) layer.
+//  If there is any it retunrs TRUE ,else false
+
 bool checkGameOver()
 {
     int x;
     for ( x = 0 ; x < MAXX ; x++ )
         if ( Field[0][x] != BLACK )
             return true;
-    return false;        
+    return false;
 }
+
+//  Saves an object NewBlock to the field.
+//  Fills matrix with colors of the blocks
 
 void saveToField(Block NewBlock)
 {

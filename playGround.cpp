@@ -19,14 +19,11 @@
 #define PIN_DC_TFT          p21
 #define PIN_BL_TFT          p15
 #define PIN_CS_SD           p4
-#define SMALL_BLOCK_SIZE    8
 
 SeeedStudioTFTv2 TFT(PIN_XP, PIN_XM, PIN_YP, PIN_YM, PIN_MOSI, PIN_MISO, PIN_SCLK, PIN_CS_TFT, PIN_DC_TFT, PIN_BL_TFT);
 
-void setColor( int y, int x, int color )
-{
-    Field[y][x] = color;
-}
+//  Draws Field on the screen. Draw both black and colored blocks
+//  It does delete everything on the PlayGround what shouldn't be there
 
 void drawMap()
 {
@@ -45,21 +42,26 @@ void drawMap()
     }
 }
 
+//  Draws Field on the screen. Draw only colored blocks
+//  It doesn't delete anything on the playground what shouldn't be there
+
 void drawMapV2()
 {
     int y , x;
     for ( y = 0 ; y < MAXY ; y++ ) {
         for ( x = 0 ; x < MAXX ; x++ ) {
             TFT.fillrect(20 * ( x + 1 ), 20 * y,
-                             BLOCK_SIZE * ( x + 2 ), BLOCK_SIZE * ( y + 1 ),
-                             Field[y][x]);
-            if ( Field[y][x] != 0 ) 
+                         BLOCK_SIZE * ( x + 2 ), BLOCK_SIZE * ( y + 1 ),
+                         Field[y][x]);
+            if ( Field[y][x] != 0 )
                 TFT.rect(BLOCK_SIZE * ( x + 1 ), BLOCK_SIZE * y,
                          BLOCK_SIZE * ( x + 2 ), BLOCK_SIZE * ( y + 1 ),
                          0xFFFF );
         }
     }
 }
+
+//  Draws NewBlock on the playground. 
 
 void drawBlock(Block NewBlock)
 {
@@ -79,6 +81,8 @@ void drawBlock(Block NewBlock)
     }
 }
 
+//  Removes NewBlock from the playground. 
+
 void clrBlock(Block NewBlock)
 {
     int ix , iy , x , y;
@@ -93,6 +97,8 @@ void clrBlock(Block NewBlock)
             }
     }
 }
+
+//  Draws purple frame around playground
 
 void drawFrame()
 {
@@ -110,6 +116,9 @@ void drawFrame()
     }
 }
 
+//  Initializes screen parameters, sets orentation, background,
+//  fonts and cleans screen.
+
 void TFTInit()
 {
     TFT.set_orientation(0);
@@ -117,8 +126,14 @@ void TFTInit()
     TFT.background(0);
     TFT.cls();
     TFT.set_font((unsigned char*) Arial24x23);
-    drawFrame();
 }
+
+//  Reads gestures from the screen. 
+//  Returns         :   0 for dropping object down
+//                      1 for moving object to the right
+//                      2 for moving object to the left
+//                      3 for rotating object counter-clockwise
+//                      4 for rotating objec clockwise
 
 int getGesture()
 {
@@ -154,6 +169,8 @@ int getGesture()
     return 13;         //13 = IGNORE
 }
 
+//  Returns status of screen. If it was touched returns true, else false
+
 bool TouchStatus()
 {
     point p;
@@ -162,11 +179,12 @@ bool TouchStatus()
     return false;
 }
 
+//  Moves NewBlock acording the gesture was read by function getGesture.
+
 Block doGest(Block NewBlock)
 {
     int gest = getGesture();
     if ( gest != 13 ) {
-        //clrBlock(NewBlock);
         switch ( gest ) {
             case 0: {
                 while ( !NewBlock.CheckBottom() ) {
@@ -197,6 +215,8 @@ Block doGest(Block NewBlock)
     return NewBlock;
 }
 
+//  Clearing the screen and displays "Game Over" title and  final score
+
 void gameOver(int score)
 {
     TFT.cls();
@@ -204,14 +224,19 @@ void gameOver(int score)
     TFT.printf("Score : %i", score);
 }
 
+//  Draws the current score on the bottom of the screen
+
 void drawScore(int score)
 {
     TFT.set_font((unsigned char*) Arial12x12);
     TFT.locate(0,300);
     TFT.printf("Score : %i", score);
     TFT.set_font((unsigned char*) Arial24x23);
-    
+
 }
+
+//  Draws the next block on the bottom of the screen. 
+//  Block is sized of SMALL_BLOCK_SIZED
 
 void drawNextBlock(Block NewBlock)
 {
@@ -230,6 +255,8 @@ void drawNextBlock(Block NewBlock)
             }
     }
 }
+
+//  Clearing NextBlock Simbol on the bottom of the screen
 
 void clrNextBlock(Block NewBlock)
 {
